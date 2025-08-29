@@ -41,21 +41,35 @@ static std::string frameToAscii(const cv::Mat& frame) {
 
 int main(int argc, char *argv[]) {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_WARNING);
+	cv::VideoCapture cap;
+	const float FPS = 60;
+
 	if (argc < 2) {
-		std::cout << "Please add the absolute video path as the second argument";
-		return -1;
+		std::cout << "No video file path given as param, taking default";
+		cap = cv::VideoCapture(std::string(RESOURCES_PATH) + "test_videos/BlueBird.mp4");
 	}
-	std::cout << argv[1] << std::endl;
-	cv::VideoCapture cap(argv[1]);
-	cap.set(cv::CAP_PROP_FPS, 60);
-	cv::Mat frame;
+	else {
+		cap = cv::VideoCapture(argv[1]);
+	}
 
 	if (!cap.isOpened()) {
 		std::cout << "Could not find video!";
 		return -1;
 	}
 
+	cv::Mat frame;
+	auto lastTime = std::chrono::high_resolution_clock::now();
+	float frameDuration = 1.0 / FPS;
+
 	while (true) {
+		auto now = std::chrono::high_resolution_clock::now();
+		double elapsed = std::chrono::duration<double>(now - lastTime).count();
+		if (elapsed < frameDuration) {
+			std::this_thread::sleep_for(std::chrono::duration<double>(frameDuration - elapsed));
+			continue;
+		}
+		lastTime = now;
+
 		cap.read(frame);
 		if (frame.empty()) {
 			std::cout << "Grabbed empty frame!";

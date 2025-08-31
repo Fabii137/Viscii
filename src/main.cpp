@@ -1,6 +1,5 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include <windows.h>
 
 #include "AsciiConverter.hpp"
 
@@ -14,7 +13,7 @@ int main(int argc, char *argv[]) {
 
 	if (argc < 2) {
 		std::cout << "No video file path given as param, taking default";
-		cap = cv::VideoCapture(std::string(RESOURCES_PATH) + "test_videos/Gurenge.mp4");
+		cap = cv::VideoCapture(std::string(RESOURCES_PATH) + "test_videos/BlueBird.mp4");
 	}
 	else {
 		cap = cv::VideoCapture(argv[1]);

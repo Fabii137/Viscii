@@ -1,15 +1,20 @@
-#include <opencv2/opencv.hpp>
 #include <Windows.h>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 
 class AsciiConverter {
 public:
-	AsciiConverter(const std::string& asciiChars);
+  AsciiConverter(const std::string &asciiChars);
+
 public:
-	std::string convert(const cv::Mat& frame);
-	void print(std::string ascii);
+  std::string convert(const cv::Mat &frame);
+  void print(std::string ascii);
+
 private:
-	static std::string getColoredChar(const cv::Vec3b pixel, char c);
-	static int getConsoleWidth();
+  static std::string getColoredChar(const cv::Vec3b pixel, char c);
+  static int getConsoleWidth();
+
 private:
-	const std::string& m_AsciiChars;
+  const std::string &m_AsciiChars;
 };

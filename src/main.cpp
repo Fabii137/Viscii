@@ -4,6 +4,11 @@
 #include <opencv2/core/utils/logger.hpp>
 #include <thread>
 
+#include "opencv2/videoio.hpp"
+
+constexpr int FPS = 60;
+constexpr float FRAME_DURATION = 1.f / FPS;
+
 const std::string ASCII_CHARS =
     " `.-':_,^=;><+!rc*/"
     "z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
@@ -11,7 +16,6 @@ const std::string ASCII_CHARS =
 int main(int argc, char *argv[]) {
   cv::VideoCapture cap;
   AsciiConverter converter(ASCII_CHARS);
-  const float FPS = 60;
 
   cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
   if (argc < 2) {
@@ -29,16 +33,15 @@ int main(int argc, char *argv[]) {
 
   cv::Mat frame;
   auto lastTime = std::chrono::high_resolution_clock::now();
-  float frameDuration = 1.0 / FPS;
 
   converter.clearConsole();
 
   while (true) {
     auto now = std::chrono::high_resolution_clock::now();
     double elapsed = std::chrono::duration<double>(now - lastTime).count();
-    if (elapsed < frameDuration) {
+    if (elapsed < FRAME_DURATION) {
       std::this_thread::sleep_for(
-          std::chrono::duration<double>(frameDuration - elapsed));
+          std::chrono::duration<double>(FRAME_DURATION - elapsed));
       continue;
     }
     lastTime = now;

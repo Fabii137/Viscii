@@ -3,21 +3,22 @@
 #include <iostream>
 
 AsciiConverter::AsciiConverter(const std::string &asciiChars)
-    : m_AsciiChars(asciiChars) {}
+    : c_AsciiChars(asciiChars) {}
 
 std::string AsciiConverter::convert(const cv::Mat &frame) {
-  cv::Mat resized;
+  cv::Mat resized, gray;
   int width = getConsoleWidth();
   int height = (double)frame.rows * width / frame.cols / 2.4;
   cv::resize(frame, resized, cv::Size(width, height));
+  cv::cvtColor(resized, gray, cv::COLOR_BGR2GRAY);
 
   std::string ascii;
-  for (int i = 0; i < resized.rows; i++) {
-    for (int j = 0; j < resized.cols; j++) {
+  for (int i = 0; i < gray.rows; i++) {
+    for (int j = 0; j < gray.cols; j++) {
+      uchar grayPixel = gray.at<uchar>(i, j);
+      char c = c_AsciiChars[grayPixel * (c_AsciiChars.size() - 1) / 255];
+
       cv::Vec3b pixel = resized.at<cv::Vec3b>(i, j);
-      int gray = (int)(0.114 * pixel[0] + 0.587 * pixel[1] +
-                       0.299 * pixel[2]); // convert pixel from bgr to gray
-      char c = m_AsciiChars[gray * (m_AsciiChars.size() - 1) / 255];
       ascii += getColoredChar(pixel, c);
     }
     ascii += "\n";
@@ -25,7 +26,7 @@ std::string AsciiConverter::convert(const cv::Mat &frame) {
   return ascii;
 }
 
-void AsciiConverter::print(std::string ascii) {
+void AsciiConverter::print(const std::string &ascii) {
   // start from beginning
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleCursorPosition(hConsole, {0, 0});
@@ -33,7 +34,7 @@ void AsciiConverter::print(std::string ascii) {
   std::cout << ascii << std::endl;
 }
 
-std::string AsciiConverter::getColoredChar(const cv::Vec3b pixel, char c) {
+std::string AsciiConverter::getColoredChar(const cv::Vec3b &pixel, char c) {
   // windows console color
   return std::format("\033[38;2;{};{};{}m{}\033[0m",
                      (int)pixel[2], // r

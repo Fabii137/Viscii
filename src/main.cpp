@@ -1,6 +1,7 @@
 #include "AsciiConverter.hpp"
 #include <chrono>
 #include <iostream>
+#include <opencv2/core/utils/logger.hpp>
 #include <thread>
 
 const std::string ASCII_CHARS =
@@ -12,6 +13,7 @@ int main(int argc, char *argv[]) {
   AsciiConverter converter(ASCII_CHARS);
   const float FPS = 60;
 
+  cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
   if (argc < 2) {
     std::cout << "No video file path given as param, taking default";
     cap = cv::VideoCapture(std::string(RESOURCES_PATH) +
@@ -28,6 +30,8 @@ int main(int argc, char *argv[]) {
   cv::Mat frame;
   auto lastTime = std::chrono::high_resolution_clock::now();
   float frameDuration = 1.0 / FPS;
+
+  converter.clearConsole();
 
   while (true) {
     auto now = std::chrono::high_resolution_clock::now();

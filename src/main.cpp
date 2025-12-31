@@ -19,26 +19,31 @@ int main(int argc, char *argv[]) {
 
   cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
   if (argc < 2) {
-    std::cout << "No video file path given as param, taking default";
     cap = cv::VideoCapture(std::string(RESOURCES_PATH) +
                            "test_videos/BlueBird.mp4");
+  } else if (argc > 2) {
+    std::cout
+        << "Correct usage:\n\tViscii <path/to/video>\n\tViscii (default video)"
+        << std::endl;
+    return -1;
   } else {
     cap = cv::VideoCapture(argv[1]);
   }
 
   if (!cap.isOpened()) {
-    std::cout << "Could not find video!";
+    std::cout << "Could not find video!" << std::endl;
     return -1;
   }
 
   cv::Mat frame;
   auto lastTime = std::chrono::high_resolution_clock::now();
 
-  converter.clearConsole();
+  AsciiConverter::clearConsole();
 
   while (true) {
-    auto now = std::chrono::high_resolution_clock::now();
-    double elapsed = std::chrono::duration<double>(now - lastTime).count();
+    const auto now = std::chrono::high_resolution_clock::now();
+    const double elapsed =
+        std::chrono::duration<double>(now - lastTime).count();
     if (elapsed < FRAME_DURATION) {
       std::this_thread::sleep_for(
           std::chrono::duration<double>(FRAME_DURATION - elapsed));
@@ -48,11 +53,10 @@ int main(int argc, char *argv[]) {
 
     cap.read(frame);
     if (frame.empty()) {
-      std::cout << "Grabbed empty frame!";
       break;
     }
-    std::string ascii = converter.convert(frame);
-    converter.print(ascii);
+    const std::string ascii = converter.convert(frame);
+    AsciiConverter::print(ascii);
   }
   return 0;
 }

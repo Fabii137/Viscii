@@ -10,18 +10,20 @@ AsciiConverter::AsciiConverter(const std::string &asciiChars)
 
 std::string AsciiConverter::convert(const cv::Mat &frame) const {
   cv::Mat resized, gray;
-  int width = getConsoleWidth();
-  int height = static_cast<int>(static_cast<double>(frame.rows) * width / frame.cols / 2.4);
+  const int width = getConsoleWidth();
+  const int height = static_cast<int>(static_cast<double>(frame.rows) * width /
+                                      frame.cols / 2.4);
   cv::resize(frame, resized, cv::Size(width, height));
   cv::cvtColor(resized, gray, cv::COLOR_BGR2GRAY);
 
   std::string ascii;
+  ascii.reserve(height * width);
   for (int i = 0; i < gray.rows; i++) {
     for (int j = 0; j < gray.cols; j++) {
-      uchar grayPixel = gray.at<uchar>(i, j);
-      char c = c_AsciiChars[grayPixel * (c_AsciiChars.size() - 1) / 255];
+      const uchar grayPixel = gray.at<uchar>(i, j);
+      const char c = c_AsciiChars[grayPixel * (c_AsciiChars.size() - 1) / 255];
 
-      cv::Vec3b pixel = resized.at<cv::Vec3b>(i, j);
+      const cv::Vec3b pixel = resized.at<cv::Vec3b>(i, j);
       ascii += getColoredChar(pixel, c);
     }
     ascii += "\n";
@@ -34,7 +36,7 @@ void AsciiConverter::print(const std::string &ascii) {
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleCursorPosition(hConsole, {0, 0});
 
-  std::cout << ascii << std::endl;
+  std::cout << ascii;
 }
 
 void AsciiConverter::clearConsole() { std::cout << "\033[2J\033[H"; }

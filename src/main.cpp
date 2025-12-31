@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
                            "test_videos/BlueBird.mp4");
   } else if (argc > 2) {
     std::cout
-        << "Correct usage:\n\tViscii <path/to/video>\n\tViscii (default video)"
+        << "Correct usage:\n\tviscii <path/to/video>\n\tviscii (default video)"
         << std::endl;
     return -1;
   } else {

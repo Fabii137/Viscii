@@ -1,5 +1,5 @@
 # Viscii
-A simple application to view videos in the terminal.
+A simple application to view videos as colored ASCII characters in the terminal.
 
 Currently only works on Windows!
 

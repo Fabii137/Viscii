@@ -1,5 +1,7 @@
 # Viscii
-A simple application to view videos in the terminal
+A simple application to view videos in the terminal.
+
+Currently only works on Windows!
 
 ## Requirements:
 - CMake 3.16
@@ -19,6 +21,6 @@ cmake --build .
 
 3. Run project
 ```bash
-./bin/viscii <path/to/file>
-./bin/viscii // uses default video
+.\bin\viscii.exe <path/to/file>
+.\bin\viscii.exe # uses default video
 ```

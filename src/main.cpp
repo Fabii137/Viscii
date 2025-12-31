@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_SILENT);
   if (argc < 2) {
     cap = cv::VideoCapture(std::string(RESOURCES_PATH) +
-                           "test_videos/BlueBird.mp4");
+                           "test_videos/Kaleidoscope.mp4");
   } else if (argc > 2) {
     std::cout
         << "Correct usage:\n\tviscii <path/to/video>\n\tviscii (default video)"

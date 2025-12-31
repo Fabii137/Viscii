@@ -3,16 +3,27 @@
 #include <iostream>
 
 #include "opencv2/imgproc.hpp"
-#include <Windows.h>
+
+// ratio of character height to width in the terminal
+constexpr float CHAR_RATIO = 2.4f;
 
 AsciiConverter::AsciiConverter(const std::string &asciiChars)
     : c_AsciiChars(asciiChars) {}
 
 std::string AsciiConverter::convert(const cv::Mat &frame) const {
   cv::Mat resized, gray;
-  const int width = getConsoleWidth();
-  const int height = static_cast<int>(static_cast<double>(frame.rows) * width /
-                                      frame.cols / 2.4);
+  const COORD consoleSize = getConsoleSize();
+  int width = consoleSize.X;
+  int height = static_cast<int>(static_cast<double>(frame.rows) * width /
+                                frame.cols / CHAR_RATIO);
+
+  const SHORT maxHeight = consoleSize.Y - 2;
+  // resize if video is bigger than terminal
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = static_cast<int>(frame.cols * CHAR_RATIO * height / frame.rows);
+  }
+
   cv::resize(frame, resized, cv::Size(width, height));
   cv::cvtColor(resized, gray, cv::COLOR_BGR2GRAY);
 
@@ -50,8 +61,8 @@ std::string AsciiConverter::getColoredChar(const cv::Vec3b &pixel, char c) {
                      c);
 }
 
-int AsciiConverter::getConsoleWidth() {
+COORD AsciiConverter::getConsoleSize() {
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo);
-  return bufferInfo.dwSize.X;
+  return bufferInfo.dwSize;
 }

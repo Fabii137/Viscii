@@ -17,7 +17,7 @@ std::string AsciiConverter::convert(const cv::Mat &frame) const {
   ConsoleSize consoleSize = ::getConsoleSize();
   uint32_t width = consoleSize.width;
   uint32_t height = static_cast<int>(static_cast<double>(frame.rows) * width /
-                                frame.cols / CHAR_RATIO);
+                                     frame.cols / CHAR_RATIO);
 
   uint32_t maxHeight = consoleSize.height - 2;
   // resize if video is bigger than terminal
@@ -31,7 +31,7 @@ std::string AsciiConverter::convert(const cv::Mat &frame) const {
 
   std::string ascii;
   ascii.reserve(height * width * 20);
-  
+
   for (uint32_t i = 0; i < height; i++) {
     for (uint32_t j = 0; j < width; j++) {
       const uchar grayPixel = gray.at<uchar>(i, j);

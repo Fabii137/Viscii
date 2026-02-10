@@ -50,11 +50,12 @@ int main(int argc, char *argv[]) {
     if (!cap.read(frame) || frame.empty()) {
       break;
     }
-    
+
     const std::string ascii = converter.convert(frame);
     AsciiConverter::print(ascii);
-    
-    nextFrameTime += std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(
+
+    nextFrameTime += std::chrono::duration_cast<
+        std::chrono::high_resolution_clock::duration>(
         std::chrono::duration<double>(frameDuration));
   }
   return 0;

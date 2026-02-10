@@ -6,6 +6,39 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 
+# Check for pkg-config and video backend support on Linux/macOS
+if(UNIX)
+    find_package(PkgConfig)
+    if(NOT PKG_CONFIG_FOUND)
+        if(APPLE)
+            message(FATAL_ERROR "pkg-config not found. Install with: brew install pkg-config")
+        else()
+            message(FATAL_ERROR "pkg-config not found. Install with: sudo apt install pkg-config")
+        endif()
+    endif()
+    pkg_check_modules(FFMPEG libavcodec libavformat libavutil libswscale)
+    pkg_check_modules(GSTREAMER gstreamer-1.0)
+    
+    if(NOT FFMPEG_FOUND AND NOT GSTREAMER_FOUND)
+        if(APPLE)
+            message(FATAL_ERROR
+                "Video backend not found!\n"
+                "Install FFmpeg with Homebrew:\n"
+                "  brew install ffmpeg"
+            )
+        else()
+            message(FATAL_ERROR
+                "Video backend not found!\n"
+                "Install one of the following:\n"
+                "FFmpeg:\n"
+                "  sudo apt install libavcodec-dev libavformat-dev libavutil-dev libswscale-dev\n"
+                "OR GStreamer:\n"
+                "  sudo apt install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev"
+            )
+        endif()
+    endif()
+endif()
+
 # OpenCV configuration
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenCVConfig.cmake)
 

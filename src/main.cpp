@@ -6,9 +6,6 @@
 
 #include "opencv2/videoio.hpp"
 
-constexpr int FPS = 60;
-constexpr float FRAME_DURATION = 1.f / FPS;
-
 const std::string ASCII_CHARS =
     " `.-':_,^=;><+!rc*/"
     "z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
@@ -35,28 +32,31 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  const double videoFps = cap.get(cv::CAP_PROP_FPS);
+  const double frameDuration = (videoFps > 0) ? (1.0 / videoFps) : (1.0 / 30.0);
+
   cv::Mat frame;
-  auto lastTime = std::chrono::high_resolution_clock::now();
+  auto nextFrameTime = std::chrono::high_resolution_clock::now();
 
   AsciiConverter::clearConsole();
 
   while (true) {
     const auto now = std::chrono::high_resolution_clock::now();
-    const double elapsed =
-        std::chrono::duration<double>(now - lastTime).count();
-    if (elapsed < FRAME_DURATION) {
-      std::this_thread::sleep_for(
-          std::chrono::duration<double>(FRAME_DURATION - elapsed));
-      continue;
-    }
-    lastTime = now;
 
-    cap.read(frame);
-    if (frame.empty()) {
+    if (now < nextFrameTime) {
+      std::this_thread::sleep_until(nextFrameTime);
+    }
+
+    if (!cap.read(frame) || frame.empty()) {
       break;
     }
+
     const std::string ascii = converter.convert(frame);
     AsciiConverter::print(ascii);
+
+    nextFrameTime += std::chrono::duration_cast<
+        std::chrono::high_resolution_clock::duration>(
+        std::chrono::duration<double>(frameDuration));
   }
   return 0;
 }

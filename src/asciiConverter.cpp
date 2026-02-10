@@ -53,7 +53,6 @@ void AsciiConverter::print(const std::string &ascii) {
 void AsciiConverter::clearConsole() { std::cout << "\033[2J\033[H"; }
 
 std::string AsciiConverter::getColoredChar(const cv::Vec3b &pixel, char c) {
-  // windows console color
   return std::format("\033[38;2;{};{};{}m{}\033[0m",
                      static_cast<int>(pixel[2]), // r
                      static_cast<int>(pixel[1]), // g

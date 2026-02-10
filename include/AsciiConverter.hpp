@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Windows.h>
 #include <opencv2/core.hpp>
 
 class AsciiConverter {
@@ -13,7 +12,6 @@ public:
 
 private:
   static std::string getColoredChar(const cv::Vec3b &pixel, char c);
-  static COORD getConsoleSize();
 
 private:
   const std::string &c_AsciiChars;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <opencv2/core.hpp>
 
 class AsciiConverter {
@@ -11,7 +12,9 @@ public:
   static void clearConsole();
 
 private:
-  static std::string getColoredChar(const cv::Vec3b &pixel, char c);
+  static std::uint8_t convertBGR2Gray(const cv::Vec3b &pixel);
+  static void appendColoredChar(std::string &ascii, const cv::Vec3b &pixel,
+                                char c);
 
 private:
   const std::string &c_AsciiChars;

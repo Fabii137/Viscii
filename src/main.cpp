@@ -1,6 +1,5 @@
 #include "AsciiConverter.hpp"
 #include <chrono>
-#include <iostream>
 #include <opencv2/core/utils/logger.hpp>
 #include <stdexcept>
 #include <thread>
